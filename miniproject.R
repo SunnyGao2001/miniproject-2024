@@ -19,7 +19,7 @@ library(car)
 ?read.csv
 seal <- read.csv('Desktop/Alaska Pribilof Island northern fur seal pup weight 1957-present.csv', 
                  header=T)
-seal <- subset(seal, seal$sex =='M'|seal$sex =='F')
+seal <- subset(seal, seal$sex =='M'|seal$sex =='F') #remove invalid sex datapoints
 seal <- subset(seal, seal$plen >= 0 ) #remove data error
 
 #data illustration/check outliners
@@ -31,7 +31,7 @@ stats <- boxplot.stats(seal$plen)
 seal <-  subset(seal,seal$wgt >= 6.0 ) #remove newborns 
 seal <-  subset(seal,seal$wgt <= 15 ) #remove older juveniles
 seal <-  subset(seal,seal$plen >= 60 ) #same for length
-names(seal)[names(seal) == "plen"] <- "length"
+names(seal)[names(seal) == "plen"] <- "length" 
 
 #data visulisation
 ggplot(seal, aes(x = wgt, fill = sex)) +
@@ -50,7 +50,7 @@ names(seal)[names(seal) == "yr"] <- "Year"
 temp <- read.csv('Desktop/ala.temp.csv')
 rain <- read.csv('Desktop/ala.rain.csv')
 # add temperature and rainfall data '
-view
+
 #merge the climate data on to seal data 
 seal <- merge(seal, temp, by = 'Year' , all.x = TRUE)
 seal <- merge(seal, rain, by = 'Year' , all.x = TRUE) 
@@ -71,7 +71,7 @@ summary(sexall)
 #model selection: remove the factor has no significance
 one <- lm(wgt~ sex+ temp + pre + temp:sex  + sex:pre, data = seal)
 summary (one)
-anova(sexall, one)#compare whether removing the interactive factor has an effect:no effect
+anova(sexall, one)#compare whether removing the interactive factor has an effect:no effect so can be removed
 
 #repeat
 two <- lm ( wgt~ sex+ temp + pre + sex:temp, data = seal) 
@@ -81,8 +81,8 @@ anova(one, two)
 summary(two)
 
 par(mfrow = c(2, 2))
-plot(two)
-tab_model(two)
+plot(two) #diagnostic plot
+tab_model(two) #result table
 
 #plot the results 
 plot_model(two, show.values = TRUE, show.intercept = TRUE)
